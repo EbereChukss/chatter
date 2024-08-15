@@ -21,7 +21,11 @@ interface PreviewState {
   photo: File | null;
 }
 
-const Preview: React.FC<PreviewProps> = ({ setPublish, description, title }) => {
+const Preview: React.FC<PreviewProps> = ({
+  setPublish,
+  description,
+  title,
+}) => {
   const imageRef = useRef<HTMLInputElement | null>(null);
   const [imageUrl, setImageUrl] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
@@ -138,15 +142,18 @@ const Preview: React.FC<PreviewProps> = ({ setPublish, description, title }) => 
                 setPreview((prev) => ({ ...prev, title: e.target.value }))
               }
             />
-            <ReactQuill
-              theme="bubble"
-              value={desc}
-              onChange={setDesc}
-              placeholder="Tell Your Story..."
-              className="py-3 border-b border-gray-300"
-            />
+            <div className="py-3 border-b border-gray-300">
+              <ReactQuill
+                theme="bubble"
+                value={desc}
+                onChange={setDesc}
+                placeholder="Tell Your Story..."
+              />
+            </div>
             <p className="text-gray-500 pt-4 text-sm">
-              <span className="font-bold">Note:</span> Changes here will affect how your story appears in public places like Medium’s homepage and in subscribers’ inboxes — not the contents of the story itself.
+              <span className="font-bold">Note:</span> Changes here will affect
+              how your story appears in public places like Medium’s homepage and
+              in subscribers’ inboxes — not the contents of the story itself.
             </p>
           </div>
           <div className="flex-[1] flex flex-col gap-4 mb-5 md:mb-0">
@@ -154,7 +161,10 @@ const Preview: React.FC<PreviewProps> = ({ setPublish, description, title }) => 
               Publishing to:
               <span className="font-bold capitalize">Milad Tech</span>
             </h3>
-            <p>Add or change topics up to 5 so readers know what your story is about</p>
+            <p>
+              Add or change topics up to 5 so readers know what your story is
+              about
+            </p>
             <TagsInput value={tags} onChange={setTags} />
             <button
               onClick={handleSubmit}

@@ -15,27 +15,32 @@ const Follow: React.FC = () => {
   const { currentUser, allUsers } = Blog();
   const [count, setCount] = useState<number>(5);
 
+  // Ensure that currentUser and allUsers are correctly typed and not undefined
+  if (!currentUser || !allUsers) {
+    return <div>Loading...</div>; // Optional loading state
+  }
+
   // Filter out the current user from the list and slice it based on the count
-  const users: User[] =
-    allUsers
-      ?.filter((user: User) => user.userId !== currentUser?.uid)
-      .slice(0, count) || [];
+  const users: User[] = allUsers
+    .filter((user: User) => user.userId !== currentUser.uid)
+    .slice(0, count);
 
   const navigate = useNavigate();
 
   return (
     <>
-      {users.map((user, i) => {
+      {users.map((user) => {
         const { username, bio, userImg, userId } = user;
         return (
-          <div key={i} className="flex items-start gap-2 my-4">
+          <div key={user.userId} className="flex items-start gap-2 my-4">
             <div
-              onClick={() => navigate("/profile" + "/" + userId)}
-              className="flex-1 flex items-center gap-2 cursor-pointer">
+              onClick={() => navigate(`/profile/${userId}`)}
+              className="flex-1 flex items-center gap-2 cursor-pointer"
+            >
               <img
-                className="w-[3rem] h-[3rem] object-cover gap-2 cursor-pointer rounded-full"
+                className="w-[3rem] h-[3rem] object-cover rounded-full"
                 src={userImg}
-                alt="userImg"
+                alt={username}
               />
               <div className="flex flex-col gap-1">
                 <h2 className="font-bold capitalize">{username}</h2>
@@ -48,13 +53,14 @@ const Follow: React.FC = () => {
           </div>
         );
       })}
-      {allUsers?.length > 5 && (
+      {allUsers.length > count && (
         <button
           onClick={() =>
-            setCount((prev) => users.length < allUsers.length && prev + 3)
+            setCount((prev) => Math.min(prev + 3, allUsers.length))
           }
-          className="mb-3 text-green-900 text-sm hover:underline">
-          Load for more users
+          className="mb-3 text-green-900 text-sm hover:underline"
+        >
+          Load more users
         </button>
       )}
     </>
