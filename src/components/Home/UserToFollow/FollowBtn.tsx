@@ -45,11 +45,20 @@ const FollowBtn: React.FC<FollowBtnProps> = ({ userId }) => {
         }
       }
     } catch (error) {
-      toast.error(error.message);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
     }
   };
 
   const { pathname } = useLocation();
+
+  // Handle loading state
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <button

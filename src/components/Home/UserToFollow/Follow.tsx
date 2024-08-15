@@ -16,12 +16,15 @@ const Follow: React.FC = () => {
   const [count, setCount] = useState<number>(5);
 
   // Ensure that currentUser and allUsers are correctly typed and not undefined
-  if (!currentUser || !allUsers) {
+  if (!currentUser || !Array.isArray(allUsers)) {
     return <div>Loading...</div>; // Optional loading state
   }
 
+  // Cast allUsers to an array of User if it's not already typed correctly
+  const typedUsers = allUsers as User[];
+
   // Filter out the current user from the list and slice it based on the count
-  const users: User[] = allUsers
+  const users: User[] = typedUsers
     .filter((user: User) => user.userId !== currentUser.uid)
     .slice(0, count);
 
@@ -53,10 +56,10 @@ const Follow: React.FC = () => {
           </div>
         );
       })}
-      {allUsers.length > count && (
+      {typedUsers.length > count && (
         <button
           onClick={() =>
-            setCount((prev) => Math.min(prev + 3, allUsers.length))
+            setCount((prev) => Math.min(prev + 3, typedUsers.length))
           }
           className="mb-3 text-green-900 text-sm hover:underline"
         >
