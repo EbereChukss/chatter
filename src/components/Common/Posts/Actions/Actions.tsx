@@ -30,17 +30,17 @@ const Actions: React.FC<ActionsProps> = ({ postId, title, desc }) => {
   };
 
   const handleRemove = async () => {
+    if (!currentUser || !currentUser.uid) {
+      toast.error("You must be logged in to delete a post.");
+      return;
+    }
+
     try {
       const ref = doc(db, "posts", postId);
-      const likeRef = doc(db, "posts", postId, "likes", currentUser?.uid);
-      const commentRef = doc(db, "posts", postId, "comments", currentUser?.uid);
-      const savedPostRef = doc(
-        db,
-        "users",
-        currentUser?.uid,
-        "savedPost",
-        postId
-      );
+      const likeRef = doc(db, "posts", postId, "likes", currentUser.uid);
+      const commentRef = doc(db, "posts", postId, "comments", currentUser.uid);
+      const savedPostRef = doc(db, "users", currentUser.uid, "savedPost", postId);
+
       await deleteDoc(ref);
       await deleteDoc(likeRef);
       await deleteDoc(commentRef);
@@ -50,7 +50,7 @@ const Actions: React.FC<ActionsProps> = ({ postId, title, desc }) => {
       setShowDrop(false);
       navigate("/");
     } catch (error) {
-      toast.error(error.message);
+      toast.error((error as Error).message || "An error occurred while deleting the post.");
     }
   };
 

@@ -1,27 +1,19 @@
 import React, { useEffect } from "react";
-import ReactQuill from "../../../react-quill";
+import ReactQuill from "react-quill";
 import { Blog } from "../../../Context/Context";
 
-// Assuming the context provides these types
 interface UpdateData {
   title: string;
   description: string;
 }
 
 const EditPost: React.FC = () => {
-  const { updateData, title, setTitle, description, setDescription } =
-    Blog() as {
-      updateData: UpdateData | null;
-      title: string;
-      setTitle: (title: string) => void;
-      description: string;
-      setDescription: (description: string) => void;
-    };
+  const { updateData, title, setTitle, description, setDescription } = Blog();
 
   useEffect(() => {
     if (updateData) {
-      setTitle(updateData.title);
-      setDescription(updateData.description);
+      setTitle((updateData as UpdateData).title);
+      setDescription((updateData as UpdateData).description);
     }
   }, [updateData, setTitle, setDescription]);
 
@@ -34,13 +26,14 @@ const EditPost: React.FC = () => {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
-      <ReactQuill
-        placeholder="Description..."
-        className="!text-[4rem] my-3"
-        theme="bubble"
-        value={description}
-        onChange={setDescription}
-      />
+      <div className="!text-[4rem] my-3">
+        <ReactQuill
+          placeholder="Description..."
+          theme="bubble"
+          value={description}
+          onChange={setDescription}
+        />
+      </div>
     </section>
   );
 };

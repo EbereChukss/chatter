@@ -3,7 +3,7 @@ import { Blog } from "../../Context/Context";
 import { BsGraphUpArrow } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import { readTime } from "../../utils/helper";
+import { readTime } from "../../utils/Helper";
 
 // Define the interface for a single post
 interface Post {
@@ -28,7 +28,9 @@ const Trending: React.FC = () => {
   const { postData } = Blog();
 
   // Sort posts by page views to get trending posts
-  const getTrending = postData?.sort((a, b) => b.pageViews - a.pageViews);
+  const getTrending = postData?.sort(
+    (a: Post, b: Post) => b.pageViews - a.pageViews
+  );
 
   return (
     <section className="border-b border-gray-600">
@@ -41,9 +43,11 @@ const Trending: React.FC = () => {
         </div>
         <div className="grid grid-cols-card gap-3">
           {getTrending &&
-            getTrending.slice(0, 6).map((trend, i) => (
-              <Trend trend={trend} key={i} index={i} />
-            ))}
+            getTrending
+              .slice(0, 6)
+              .map((trend: Post, i: number) => (
+                <Trend trend={trend} key={i} index={i} />
+              ))}
         </div>
       </div>
     </section>

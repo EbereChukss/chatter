@@ -5,6 +5,18 @@ import Loading from "../../../Loading/Loading";
 import PostsCard from "../../../Common/Posts/PostsCard";
 import { BiLock } from "react-icons/bi";
 
+// Define the Post interface explicitly
+interface Post {
+  id: string;
+  title?: string;
+  desc?: {
+    __html: string;
+  };
+  created?: number;
+  userId: string;
+  username: string;
+}
+
 // Define prop types
 interface ProfileListsProps {
   getUserData: {
@@ -13,21 +25,19 @@ interface ProfileListsProps {
   };
 }
 
-interface Post {
-  [key: string]: any; // Define properties of Post object as needed
-}
-
 interface PrivateListsProps {
   username: string;
 }
 
 const ProfileLists: React.FC<ProfileListsProps> = ({ getUserData }) => {
   const { currentUser } = Blog() as { currentUser: { uid: string } | null };
+  
+  // Ensure the hook supports generic typing
   const { data, loading } = useSingleFetch<Post[]>(
     "users",
     currentUser?.uid,
     "savePost"
-  );
+  ) as { data: Post[]; loading: boolean };
 
   return (
     <div>

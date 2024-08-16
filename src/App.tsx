@@ -8,7 +8,6 @@ import { Blog } from "./Context/Context";
 import { ToastContainer } from "react-toastify";
 import Profile from "./components/Home/Profile/Profile";
 import Write from "./components/Home/Write/Write";
-// import SinglePost from "./components/Common/Posts/SinglePost";
 import SinglePost from "./components/Common/Posts/SinglePost";
 import EditPost from "./components/Common/Posts/EditPost";
 import FilterPost from "./components/Demo/FilterPost";

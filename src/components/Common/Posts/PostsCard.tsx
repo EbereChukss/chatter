@@ -1,5 +1,5 @@
 import React from "react";
-import { readTime } from "../../../utils/helper";
+import { readTime } from "../../../utils/Helper";
 import moment from "moment";
 import SavedPost from "./Actions/SavedPost";
 import { Blog } from "../../../Context/Context";

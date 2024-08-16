@@ -14,13 +14,13 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../firebase/firebase";
 import { toast } from "react-toastify";
 
-// Define types for user and blog context
+// Define types for User and BlogContext
 interface User {
   id: string;
   userImg?: string;
 }
 
-interface BlogContext {
+interface Blog {
   allUsers: User[];
   userLoading: boolean;
   currentUser: { uid: string } | null;
@@ -30,19 +30,26 @@ interface BlogContext {
 }
 
 const HomeHeader: React.FC = () => {
-  const { allUsers, userLoading, currentUser, setPublish, title, description } =
-    Blog() as BlogContext;
+  const {
+    allUsers,
+    userLoading,
+    currentUser,
+    setPublish,
+    title,
+    description,
+  } = Blog();
+
   const [modal, setModal] = useState<boolean>(false);
   const [searchModal, setSearchModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+
   const getUserData = allUsers?.find((user) => user.id === currentUser?.uid);
 
   const editPath = pathname.split("/")[1];
   const postId = pathname.split("/")[2];
-
-  const navigate = useNavigate();
 
   const handleEdit = async () => {
     try {
@@ -65,16 +72,16 @@ const HomeHeader: React.FC = () => {
     <header className="border-b border-gray-200">
       {userLoading && <Loading />}
       <div className="size h-[60px] flex items-center justify-between">
-        {/* left side  */}
+        {/* left side */}
         <div className="flex items-center gap-3">
-          <Link to={"/"}>
+          <Link to="/">
             <span className="text-5xl">
               <BsMedium />
             </span>
           </Link>
           <Search modal={searchModal} setModal={setSearchModal} />
         </div>
-        {/* right side  */}
+        {/* right side */}
         <div className="flex items-center gap-3 sm:gap-7">
           <span
             onClick={() => setSearchModal(true)}

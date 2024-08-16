@@ -1,136 +1,92 @@
-import React, { useState } from "react";
-import ProfileHome from "./Activities/ProfileHome";
-import ProfileLists from "./Activities/ProfileLists";
-import ProfileAbout from "./Activities/ProfileAbout";
-import Modal from "../../../utils/Modal";
-import { LiaTimesSolid } from "react-icons/lia";
-import { IoSettingsSharp } from "react-icons/io5";
-import { discoverActions } from "../../../data";
-import EditProfile from "./EditProfile";
+import React from "react";
 import { Blog } from "../../../Context/Context";
-import { useParams } from "react-router-dom";
-import useSingleFetch from "../../hooks/useSingleFetch";
+import { BsGraphUpArrow } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
+import moment from "moment";
+import { readTime } from "../../../utils/Helper";
 
-interface User {
+// Define the interface for a single post
+interface Post {
   id: string;
-  username: string;
-  bio: string;
-  userImg: string;
-  userId: string;
-}
-
-interface Activity {
   title: string;
-  comp: React.ComponentType<ProfileActivityProps>;
+  desc: {
+    __html: string;
+  };
+  userId: string;
+  username: string;
+  userImg: string;
+  created: number;
+  pageViews: number;
 }
 
-const Profile: React.FC = () => {
-  const { allUsers, currentUser } = Blog();
-  const { userId } = useParams<{ userId: string }>();
+interface TrendProps {
+  trend: Post;
+  index: number;
+}
 
-  const activities: Activity[] = [
-    { title: "Home", comp: ProfileHome },
-    { title: "Lists", comp: ProfileLists },
-    { title: "About", comp: ProfileAbout },
-  ];
+const Trending: React.FC = () => {
+  const { postData } = Blog();
 
-  const [currentActive, setCurrentActive] = useState<Activity>(activities[0]);
-  const [modal, setModal] = useState<boolean>(false);
-  const [editModal, setEditModal] = useState<boolean>(false);
-
-  const getUserData = allUsers.find((user: User) => user.id === userId);
-
-  const { data: follows = [] } = useSingleFetch("users", userId, "follows");
-  const { data: followers = [] } = useSingleFetch("users", userId, "followers");
+  // Ensure postData is defined and correctly typed
+  const getTrending = postData?.sort((a: Post, b: Post) => b.pageViews - a.pageViews);
 
   return (
-    <section className="size flex gap-[4rem] relative">
-      {/* users activities */}
-      <div className="mt-[9rem] flex-[2]">
-        <div className="flex items-end gap-4">
-          <h2 className="text-3xl sm:text-5xl font-bold capitalize">
-            {getUserData?.username}
-          </h2>
-          <p className="text-gray-500 text-xs sm:text-sm">
-            Followers({followers.length})
-          </p>
-          <p className="text-gray-500 text-xs sm:text-sm">
-            Followings({follows.length})
-          </p>
+    <section className="border-b border-gray-600">
+      <div className="size py-[2rem]">
+        <div className="flex items-center gap-3 font-semibold">
+          <span>
+            <BsGraphUpArrow />
+          </span>
+          <h2>Trending on Medium</h2>
         </div>
-        <div className="flex items-center gap-5 mt-[1rem] border-b border-gray-300 mb-[3rem]">
-          {activities.map((item, i) => (
-            <div
-              key={i}
-              className={`py-[0.5rem] ${
-                item.title === currentActive.title ? "border-b border-gray-500" : ""
-              }`}
-            >
-              <button onClick={() => setCurrentActive(item)}>{item.title}</button>
-            </div>
-          ))}
+        <div className="grid grid-cols-card gap-3">
+          {getTrending &&
+            getTrending.slice(0, 6).map((trend: Post, i: number) => (
+              <Trend trend={trend} key={i} index={i} />
+            ))}
         </div>
-        <currentActive.comp getUserData={getUserData} setEditModal={setEditModal} />
       </div>
-      {/* button to open the side bar */}
-      <button
-        onClick={() => setModal(true)}
-        className="fixed top-[8rem] right-0 w-[2rem] h-[2rem] bg-black text-white grid place-items-center md:hidden"
-      >
-        <IoSettingsSharp />
-      </button>
-      {/* user details */}
-      <Modal modal={modal} setModal={setModal}>
-        <div
-          className={`flex-[1] border-l border-gray-300 p-[2rem] z-10 fixed right-0 bottom-0 top-0 w-[18rem] bg-white md:sticky ${
-            modal ? "translate-x-0" : "translate-x-[100%] md:translate-x-0"
-          } transition-all duration-500`}
-        >
-          {/* icons to close out modal */}
-          <div className="pb-4 text-right">
-            <button onClick={() => setModal(false)} className="inline-block md:hidden">
-              <LiaTimesSolid />
-            </button>
-          </div>
-          {/* profile details */}
-          <div className="sticky top-7 flex flex-col justify-between">
-            <img
-              className="w-[3.5rem] h-[3.5rem] object-cover rounded-full"
-              src={getUserData?.userImg || "/profile.jpg"}
-              alt="profile-img"
-            />
-            <h2 className="py-2 font-bold capitalize">{getUserData?.username}</h2>
-            <p className="text-gray-500 first-letter:uppercase text-sm">
-              {getUserData?.bio}
-            </p>
-            {currentUser?.uid === getUserData?.userId && (
-              <button
-                onClick={() => setEditModal(true)}
-                className="text-green-700 pt-6 text-sm w-fit"
-              >
-                Edit Profile
-              </button>
-            )}
-            {/* nav */}
-            <div className="flex-[1] flex items-center flex-wrap gap-3 pt-8">
-              {discoverActions.map((item) => (
-                <button key={item} className="text-xs text-black1">
-                  {item}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </Modal>
-      {editModal && (
-        <EditProfile
-          getUserData={getUserData}
-          editModal={editModal}
-          setEditModal={setEditModal}
-        />
-      )}
     </section>
   );
 };
 
-export default Profile;
+export default Trending;
+
+const Trend: React.FC<TrendProps> = ({ trend, index }) => {
+  const navigate = useNavigate();
+
+  return (
+    <main className="flex gap-4 w-full">
+      <span className="text-gray-400 text-4xl mt-4">{index + 1}</span>
+      <div className="py-6 flex flex-col gap-3">
+        <div className="flex items-center gap-2">
+          <div
+            onClick={() => navigate(`/profile/${trend?.userId}`)}
+            className="flex items-center gap-2 cursor-pointer hover:opacity-75"
+          >
+            <img
+              className="w-[1.3rem] h-[1.3rem] object-cover rounded-full"
+              src={trend?.userImg}
+              alt="userImg"
+            />
+            <h2 className="font-semibold text-sm capitalize">
+              {trend?.username}
+            </h2>
+          </div>
+        </div>
+        <div
+          onClick={() => navigate(`/post/${trend?.id}`)}
+          className="flex flex-col gap-4 cursor-pointer hover:opacity-75"
+        >
+          <p className="w-full md:w-[18rem] text-md font-bold line-clamp-2">
+            {trend.title}
+          </p>
+          <p className="text-gray-500 text-xs">
+            {moment(trend?.created).format("MMM YY")}
+            {` ${readTime(trend.desc)} min read`}
+          </p>
+        </div>
+      </div>
+    </main>
+  );
+};

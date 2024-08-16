@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useFetch from "../../hooks/useFetch";
-import { readTime } from "../../../utils/helper";
+import { readTime } from "../../../utils/Helper";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +10,16 @@ interface Post {
   title: string;
   desc: string;
   created: Date;
+  postImg?: string;
+  userId: string;
+  tags: string[];
+}
+
+interface PostItem {
+  id: string;
+  title: string;
+  desc: string;
+  created: string; // Assuming this might come as a string from the backend
   postImg?: string;
   userId: string;
   tags: string[];
@@ -26,32 +36,32 @@ interface RecommendedProps {
 }
 
 const Recommended: React.FC<RecommendedProps> = ({ post: singlePost }) => {
-  const { data: posts } = useFetch<Post[]>("posts");
+  const { data: postItems } = useFetch<PostItem[]>("posts");
   const [commonTags, setCommonTags] = useState<Post[]>([]);
 
   useEffect(() => {
-    let recommendedPosts: Post[] = [];
-    posts?.forEach((post) => {
-      if (post.id === singlePost.id) {
-        return;
-      }
+    if (!postItems) return;
 
-      const postTags = post.tags;
-      const commonTags = postTags.filter((tag) =>
-        singlePost?.tags?.includes(tag)
+    const recommendedPosts: Post[] = postItems
+      .filter((postItem) => postItem.id !== singlePost.id)
+      .map((postItem) => ({
+        id: postItem.id,
+        title: postItem.title,
+        desc: postItem.desc,
+        created: new Date(postItem.created), // Convert string to Date if needed
+        postImg: postItem.postImg,
+        userId: postItem.userId,
+        tags: postItem.tags,
+      }))
+      .filter((post) =>
+        post.tags.some((tag: string) => singlePost.tags.includes(tag)) // Explicitly type `tag`
       );
 
-      if (commonTags.length > 0) {
-        recommendedPosts.push({
-          ...post,
-        });
-      }
-    });
     recommendedPosts.sort(() => Math.random() - 0.5);
+
     const minRecommendation = 4;
-    const slicedPosts = recommendedPosts.slice(0, minRecommendation);
-    setCommonTags(slicedPosts);
-  }, [posts, singlePost]);
+    setCommonTags(recommendedPosts.slice(0, minRecommendation));
+  }, [postItems, singlePost]);
 
   return (
     <section className="bg-gray-100">
@@ -62,7 +72,7 @@ const Recommended: React.FC<RecommendedProps> = ({ post: singlePost }) => {
         ) : (
           <div className="grid grid-cols-card gap-[2rem] my-[3rem]">
             {commonTags.map((post) => (
-              <Post post={post} key={post.id} />
+              <PostComponent post={post} key={post.id} />
             ))}
           </div>
         )}
@@ -77,7 +87,7 @@ interface PostProps {
   post: Post;
 }
 
-const Post: React.FC<PostProps> = ({ post }) => {
+const PostComponent: React.FC<PostProps> = ({ post }) => {
   const { title, desc, created, postImg, id: postId, userId } = post;
   const { data: users } = useFetch<User[]>("users");
 

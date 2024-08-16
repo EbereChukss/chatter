@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import Loading from "../../Loading/Loading";
 import { Blog } from "../../../Context/Context";
 import FollowBtn from "../../Home/UserToFollow/FollowBtn";
-import { readTime } from "../../../utils/helper";
+import { readTime } from "../../../utils/Helper";
 import moment from "moment";
 import Actions from "../Posts/Actions/Actions";
 import Like from "./Actions/Like";
