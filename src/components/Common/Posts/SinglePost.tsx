@@ -26,6 +26,7 @@ interface Post {
   userImg?: string;
   userId: string;
   id: string;
+  tags?: string[]; // Add this if tags are optional
 }
 
 const SinglePost: React.FC = () => {
@@ -41,14 +42,10 @@ const SinglePost: React.FC = () => {
     if (isInitialRender.current) {
       const incrementPageView = async () => {
         try {
-          const ref = doc(db, "posts", postId as string);
-          await updateDoc(
-            ref,
-            {
-              pageViews: increment(1),
-            },
-            { merge: true }
-          );
+          const postRef = doc(db, "posts", postId as string);
+          await updateDoc(postRef, {
+            pageViews: increment(1),
+          });
         } catch (error: any) {
           toast.error(error.message);
         }

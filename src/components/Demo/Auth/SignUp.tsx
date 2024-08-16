@@ -21,6 +21,7 @@ interface FormState {
   rePassword: string;
 }
 
+
 const SignUp: React.FC<SignUpProps> = ({ setSignReq, setModal }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
@@ -30,6 +31,14 @@ const SignUp: React.FC<SignUpProps> = ({ setSignReq, setModal }) => {
     password: "",
     rePassword: "",
   });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm(prevForm => ({
+      ...prevForm,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -85,15 +94,35 @@ const SignUp: React.FC<SignUpProps> = ({ setSignReq, setModal }) => {
         magic link to your inbox.
       </p>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <Input form={form} setForm={setForm} type="text" title="username" />
-        <Input form={form} setForm={setForm} type="email" title="email" />
-        <Input form={form} setForm={setForm} type="password" title="password" />
-        <Input
-          form={form}
-          setForm={setForm}
-          type="password"
-          title="rePassword"
-        />
+      <Input
+        label="Username"
+        type="text"
+        name="username"
+        value={form.username}
+        onChange={handleInputChange}
+      />
+      <Input
+        label="Email"
+        type="email"
+        name="email"
+        value={form.email}
+        onChange={handleInputChange}
+      />
+      <Input
+        label="Password"
+        type="password"
+        name="password"
+        value={form.password}
+        onChange={handleInputChange}
+      />
+      <Input
+        label="Re-enter Password"
+        type="password"
+        name="rePassword"
+        value={form.rePassword}
+        onChange={handleInputChange}
+      />
+
         <button
           className={`px-4 py-1 text-sm rounded-full bg-green-700
         hover:bg-green-800 text-white w-fit mx-auto

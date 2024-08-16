@@ -35,8 +35,7 @@ const EditProfile: React.FC<EditProfileProps> = ({
     bio: "",
   });
 
-  const btn =
-    "border border-green-600 py-2 px-5 rounded-full text-green-600";
+  const btn = "border border-green-600 py-2 px-5 rounded-full text-green-600";
 
   const openFile = () => {
     imgRef.current?.click();
@@ -77,8 +76,13 @@ const EditProfile: React.FC<EditProfileProps> = ({
       setEditModal(false);
       toast.success("Profile has been updated");
     } catch (error) {
-      toast.error(error.message);
-      setLoading(false);
+      // toast.error(error.message);
+      // setLoading(false);
+      if (error instanceof Error) {
+        toast.error(error.message); // Access properties of Error
+      } else {
+        setLoading(false);
+      }
     }
   };
 
@@ -86,7 +90,8 @@ const EditProfile: React.FC<EditProfileProps> = ({
     <Modal modal={editModal} setModal={setEditModal}>
       <div
         className="center w-[95%] md:w-[45rem] bg-white mx-auto shadows
-        my-[1rem] z-20 mb-[3rem] p-[2rem]">
+        my-[1rem] z-20 mb-[3rem] p-[2rem]"
+      >
         {/* head  */}
         <div className="flex items-center justify-between">
           <h2 className="font-bold text-xl">Profile information</h2>
@@ -102,7 +107,11 @@ const EditProfile: React.FC<EditProfileProps> = ({
               <img
                 className="min-h-[5rem] min-w-[5rem] object-cover border border-gray-400 rounded-full"
                 src={
-                  imgUrl ? imgUrl : typeof form.userImg === "string" ? form.userImg : "/profile.jpg"
+                  imgUrl
+                    ? imgUrl
+                    : typeof form.userImg === "string"
+                    ? form.userImg
+                    : "/profile.jpg"
                 }
                 alt="profile-img"
               />
@@ -140,9 +149,7 @@ const EditProfile: React.FC<EditProfileProps> = ({
           </label>
           <input
             id="username"
-            onChange={(e) =>
-              setForm({ ...form, username: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, username: e.target.value })}
             value={form.username}
             type="text"
             placeholder="username..."
@@ -181,7 +188,8 @@ const EditProfile: React.FC<EditProfileProps> = ({
             onClick={saveForm}
             className={`${btn} bg-green-800 text-white ${
               loading ? "opacity-50" : ""
-            }`}>
+            }`}
+          >
             Save
           </button>
         </div>

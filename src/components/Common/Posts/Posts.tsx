@@ -7,11 +7,13 @@ import { Blog } from "../../../Context/Context";
 interface Post {
   title: string;
   desc: string;
-  created: Date;
   postImg?: string;
-  id: string;
-  userId: string;
   username: string;
+  created: Date;
+  userImg?: string;
+  userId: string;
+  id: string;
+  tags?: string[]; // Add this if tags are optional
 }
 
 const Posts: React.FC = () => {
