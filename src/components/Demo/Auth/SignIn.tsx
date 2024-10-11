@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 // Define the types for the props
 interface SignInProps {
   setSignReq: (value: string) => void;
+  setModal: (value: boolean) => void;
 }
 
 // Define the types for the form state

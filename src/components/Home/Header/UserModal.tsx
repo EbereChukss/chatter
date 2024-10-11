@@ -93,7 +93,7 @@ const UserModal: React.FC<UserModalProps> = ({ setModal }) => {
         className="flex flex-col pt-5 cursor-pointer hover:text-black/70"
       >
         Sign Out
-        <span className="text-sm">{secretEmail(currentUser?.email)}</span>
+        <span className="text-sm">{secretEmail(currentUser?.email || '')}</span>
       </button>
     </section>
   );

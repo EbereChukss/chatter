@@ -32,7 +32,7 @@ interface User {
 }
 
 interface RecommendedProps {
-  post: Post;
+  post: Post;  // Ensure this uses the correct Post interface
 }
 
 const Recommended: React.FC<RecommendedProps> = ({ post: singlePost }) => {

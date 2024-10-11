@@ -5,40 +5,13 @@ import Loading from "../../../Loading/Loading";
 import PostsCard from "../../../Common/Posts/PostsCard";
 import { BiLock } from "react-icons/bi";
 
-// Define the Post interface explicitly
-interface Post {
-  id: string;
-  title?: string;
-  desc?: {
-    __html: string;
-  };
-  created?: number;
-  userId: string;
-  username: string;
-}
-
-// Define prop types
-interface ProfileListsProps {
-  getUserData: {
-    userId: string;
-    username: string;
-  };
-}
-
-interface PrivateListsProps {
-  username: string;
-}
-
-const ProfileLists: React.FC<ProfileListsProps> = ({ getUserData }) => {
-  const { currentUser } = Blog() as { currentUser: { uid: string } | null };
-  
-  // Ensure the hook supports generic typing
-  const { data, loading } = useSingleFetch<Post[]>(
+const ProfileLists = ({ getUserData }) => {
+  const { currentUser } = Blog();
+  const { data, loading } = useSingleFetch(
     "users",
     currentUser?.uid,
     "savePost"
-  ) as { data: Post[]; loading: boolean };
-
+  );
   return (
     <div>
       {currentUser && currentUser?.uid === getUserData?.userId ? (
@@ -52,7 +25,7 @@ const ProfileLists: React.FC<ProfileListsProps> = ({ getUserData }) => {
           {loading ? (
             <Loading />
           ) : (
-            data && data.map((post, i) => <PostsCard post={post} key={i} />)
+            data && data?.map((post, i) => <PostsCard post={post} key={i} />)
           )}
         </div>
       ) : (
@@ -64,7 +37,7 @@ const ProfileLists: React.FC<ProfileListsProps> = ({ getUserData }) => {
 
 export default ProfileLists;
 
-const PrivateLists: React.FC<PrivateListsProps> = ({ username }) => {
+const PrivateLists = ({ username }) => {
   return (
     <div className="flex flex-col justify-center items-center gap-[3rem] text-center">
       <p>

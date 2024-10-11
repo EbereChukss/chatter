@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Blog } from "../../../Context/Context";
-import FollowBtn from "./FollowBtn";
+import FollowBtn from "../Profile/FollowBtn";
 import { useNavigate } from "react-router-dom";
 
 // Define the user interface
